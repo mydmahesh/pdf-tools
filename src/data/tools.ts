@@ -1,0 +1,148 @@
+import type { ToolDefinition } from '../types/pdf';
+
+export const TOOLS: ToolDefinition[] = [
+  {
+    id: 'merge-pdf',
+    title: 'Merge PDF',
+    shortDesc: 'Combine multiple PDFs into one unified document',
+    description: 'Combine PDFs in the order you want with the easiest PDF merger available.',
+    category: 'organize',
+    iconName: 'Combine',
+    badge: 'Popular',
+    popular: true,
+    color: '#e11d48', // rose/red
+    accept: '.pdf,application/pdf',
+    multiple: true,
+  },
+  {
+    id: 'split-pdf',
+    title: 'Split PDF',
+    shortDesc: 'Extract pages or split into independent PDF files',
+    description: 'Separate one page or a whole set for easy conversion into independent PDF files.',
+    category: 'organize',
+    iconName: 'Scissors',
+    badge: 'Popular',
+    popular: true,
+    color: '#ea580c', // orange
+    accept: '.pdf,application/pdf',
+    multiple: false,
+  },
+  {
+    id: 'compress-pdf',
+    title: 'Compress PDF',
+    shortDesc: 'Reduce file size while keeping maximal PDF quality',
+    description: 'Reduce PDF file size while maintaining the highest possible quality for easy sharing.',
+    category: 'organize',
+    iconName: 'Minimize2',
+    badge: 'Popular',
+    popular: true,
+    color: '#16a34a', // green
+    accept: '.pdf,application/pdf',
+    multiple: false,
+  },
+  {
+    id: 'pdf-to-word',
+    title: 'PDF to Word',
+    shortDesc: 'Convert PDF documents into editable DOCX files',
+    description: 'Easily convert your PDF files into easy to edit DOCX documents with preserved paragraphs.',
+    category: 'convert-from-pdf',
+    iconName: 'FileText',
+    badge: 'Popular',
+    popular: true,
+    color: '#2563eb', // blue
+    accept: '.pdf,application/pdf',
+    multiple: false,
+  },
+  {
+    id: 'pdf-to-images',
+    title: 'PDF to JPG / PNG',
+    shortDesc: 'Extract pages from your PDF as high-res images',
+    description: 'Convert each PDF page into a high quality JPG or PNG image or extract all as a ZIP.',
+    category: 'convert-from-pdf',
+    iconName: 'Image',
+    popular: true,
+    color: '#0284c7', // light blue
+    accept: '.pdf,application/pdf',
+    multiple: false,
+  },
+  {
+    id: 'images-to-pdf',
+    title: 'Images to PDF',
+    shortDesc: 'Convert JPG, PNG, and WebP images into a PDF',
+    description: 'Transform multiple images into a clean PDF document with custom margins and orientations.',
+    category: 'convert-to-pdf',
+    iconName: 'Images',
+    badge: 'Popular',
+    popular: true,
+    color: '#9333ea', // purple
+    accept: 'image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp',
+    multiple: true,
+  },
+  {
+    id: 'pdf-to-text',
+    title: 'PDF to Text',
+    shortDesc: 'Extract all readable text into clean TXT format',
+    description: 'Quickly extract text from your PDF document for easy reading, editing, or analysis.',
+    category: 'convert-from-pdf',
+    iconName: 'AlignLeft',
+    color: '#0891b2', // cyan
+    accept: '.pdf,application/pdf',
+    multiple: false,
+  },
+  {
+    id: 'text-to-pdf',
+    title: 'Text to PDF',
+    shortDesc: 'Convert plain text and notes into a PDF file',
+    description: 'Turn your notes, written content, or text files into formatted, printable PDF documents.',
+    category: 'convert-to-pdf',
+    iconName: 'PenTool',
+    color: '#4f46e5', // indigo
+    accept: '.txt,text/plain',
+    multiple: false,
+  },
+  {
+    id: 'organize-pdf',
+    title: 'Organize & Rotate',
+    shortDesc: 'Sort, reorder, rotate, or delete PDF pages',
+    description: 'Sort pages of your PDF however you like. Delete PDF pages or rotate them with visual previews.',
+    category: 'organize',
+    iconName: 'RotateCw',
+    badge: 'New',
+    color: '#d97706', // amber
+    accept: '.pdf,application/pdf',
+    multiple: false,
+  },
+  {
+    id: 'watermark-pdf',
+    title: 'Watermark PDF',
+    shortDesc: 'Add custom text watermark stamped on your PDF',
+    description: 'Stamp a custom text watermark over your PDF pages. Choose font, opacity, angle, and position.',
+    category: 'security-edit',
+    iconName: 'Stamp',
+    color: '#7c3aed', // violet
+    accept: '.pdf,application/pdf',
+    multiple: false,
+  },
+  {
+    id: 'page-numbers',
+    title: 'Page Numbers',
+    shortDesc: 'Add page numbers into PDF with custom styling',
+    description: 'Add page numbers into your PDF documents with ease. Choose positions, numbering formats, and typography.',
+    category: 'security-edit',
+    iconName: 'Hash',
+    color: '#059669', // emerald
+    accept: '.pdf,application/pdf',
+    multiple: false,
+  },
+  {
+    id: 'unlock-pdf',
+    title: 'Unlock PDF',
+    shortDesc: 'Remove password and unlock protected PDF documents',
+    description: 'Remove PDF password security, giving you the freedom to use your PDFs without restriction.',
+    category: 'security-edit',
+    iconName: 'Unlock',
+    color: '#dc2626', // red
+    accept: '.pdf,application/pdf',
+    multiple: false,
+  },
+];
