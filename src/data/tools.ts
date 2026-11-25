@@ -41,6 +41,19 @@ export const TOOLS: ToolDefinition[] = [
     multiple: false,
   },
   {
+    id: 'ocr-pdf',
+    title: 'OCR PDF (Searchable PDF)',
+    shortDesc: 'Convert scanned image PDFs into searchable text PDFs',
+    description: 'Transform scanned image documents into fully searchable, selectable, and copyable text PDFs with OCR.',
+    category: 'convert-from-pdf',
+    iconName: 'ScanText',
+    badge: 'AI OCR',
+    popular: true,
+    color: '#0d9488', // teal
+    accept: '.pdf,application/pdf',
+    multiple: false,
+  },
+  {
     id: 'pdf-to-word',
     title: 'PDF to Word',
     shortDesc: 'Convert PDF documents into editable DOCX files',

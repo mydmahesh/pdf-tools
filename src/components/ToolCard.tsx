@@ -12,6 +12,7 @@ import {
   Stamp,
   Hash,
   Unlock,
+  ScanText,
   ArrowRight,
 } from 'lucide-react';
 import type { ToolDefinition } from '../types/pdf';
@@ -29,6 +30,7 @@ const iconMap: Record<string, React.ElementType> = {
   Stamp,
   Hash,
   Unlock,
+  ScanText,
 };
 
 interface ToolCardProps {

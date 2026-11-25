@@ -4,6 +4,7 @@ export type ToolId =
   | 'merge-pdf'
   | 'split-pdf'
   | 'compress-pdf'
+  | 'ocr-pdf'
   | 'pdf-to-images'
   | 'images-to-pdf'
   | 'pdf-to-word'

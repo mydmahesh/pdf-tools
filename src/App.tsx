@@ -24,11 +24,13 @@ import {
   Stamp,
   Hash,
   Unlock,
+  ScanText,
 } from 'lucide-react';
 
 import { MergePdfView } from './components/tools/MergePdfView';
 import { SplitPdfView } from './components/tools/SplitPdfView';
 import { CompressPdfView } from './components/tools/CompressPdfView';
+import { OcrPdfView } from './components/tools/OcrPdfView';
 import { PdfToImagesView } from './components/tools/PdfToImagesView';
 import { ImagesToPdfView } from './components/tools/ImagesToPdfView';
 import { PdfToWordView } from './components/tools/PdfToWordView';
@@ -52,6 +54,7 @@ const iconMap: Record<string, React.ElementType> = {
   Stamp,
   Hash,
   Unlock,
+  ScanText,
 };
 
 export const App: React.FC = () => {
@@ -84,6 +87,8 @@ export const App: React.FC = () => {
         return <SplitPdfView onBackToHome={() => setActiveToolId(null)} />;
       case 'compress-pdf':
         return <CompressPdfView onBackToHome={() => setActiveToolId(null)} />;
+      case 'ocr-pdf':
+        return <OcrPdfView onBackToHome={() => setActiveToolId(null)} />;
       case 'pdf-to-images':
         return <PdfToImagesView onBackToHome={() => setActiveToolId(null)} />;
       case 'images-to-pdf':

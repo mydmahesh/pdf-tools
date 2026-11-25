@@ -21,9 +21,10 @@
 - **Compress PDF**: Reduce file size with Extreme, Recommended, or Low compression presets.
 
 ### 🔄 Convert from PDF
+- **OCR PDF (Searchable PDF)**: Convert scanned image PDFs into searchable, selectable text PDFs using in-browser WebAssembly OCR. Preserves original scanned graphics while embedding an invisible text layer.
 - **PDF to Word (.docx)**: Extract structured text, headers, and paragraphs into real Microsoft Word documents.
 - **PDF to JPG / PNG**: Render high-resolution (150 DPI or 300 DPI) images per page, with single or ZIP bulk downloads.
-- **PDF to Text (.txt)**: Extract readable textual data with instant copy-to-clipboard and `.txt` export.
+- **PDF to Text (.txt)**: Extract readable textual data with instant copy-to-clipboard, `.txt` export, and automatic OCR fallback for scanned documents.
 
 ### 📝 Convert to PDF
 - **Images to PDF**: Convert JPG, PNG, and WebP images to PDF with custom margins, orientations, and page sizes.

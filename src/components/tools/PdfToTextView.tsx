@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { FileUpload } from '../FileUpload';
 import { convertPdfToText } from '../../services/pdfToText';
+import { convertScannedPdfToTextPdf } from '../../services/ocrPdfService';
 import { getPdfInfo } from '../../services/thumbnailService';
 import type { ProcessResult } from '../../types/pdf';
-import { AlignLeft, Download, Copy, Check, Loader2, FileText, ArrowLeft } from 'lucide-react';
+import { AlignLeft, Download, Copy, Check, Loader2, FileText, ArrowLeft, Sparkles, ScanText } from 'lucide-react';
 
 interface PdfToTextViewProps {
   onBackToHome: () => void;
@@ -13,7 +14,9 @@ export const PdfToTextView: React.FC<PdfToTextViewProps> = ({ onBackToHome }) =>
   const [file, setFile] = useState<File | null>(null);
   const [pageCount, setPageCount] = useState<number>(1);
   const [thumbnail, setThumbnail] = useState<string>('');
+  const [useOcr, setUseOcr] = useState<boolean>(false);
   const [progress, setProgress] = useState<number | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [extractedText, setExtractedText] = useState<string | null>(null);
@@ -37,16 +40,30 @@ export const PdfToTextView: React.FC<PdfToTextViewProps> = ({ onBackToHome }) =>
     }
   };
 
-  const handleExtract = async () => {
+  const handleExtract = async (forceOcr: boolean = useOcr) => {
     if (!file) return;
     setIsProcessing(true);
     setProgress(0);
     setError(null);
 
     try {
-      const res = await convertPdfToText(file, (p) => setProgress(p));
-      setExtractedText(res.text);
-      setResult(res.result);
+      if (forceOcr) {
+        setStatusMessage('Initializing OCR engine...');
+        const ocrRes = await convertScannedPdfToTextPdf(
+          file,
+          { language: 'eng', mode: 'text-pdf' },
+          (p, status) => {
+            setProgress(p);
+            setStatusMessage(status);
+          }
+        );
+        setExtractedText(ocrRes.extractedText || 'No text could be recognized from the images.');
+        setResult(ocrRes.pdfResult);
+      } else {
+        const res = await convertPdfToText(file, (p) => setProgress(p));
+        setExtractedText(res.text);
+        setResult(res.result);
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to extract text from PDF.');
     } finally {
@@ -62,14 +79,19 @@ export const PdfToTextView: React.FC<PdfToTextViewProps> = ({ onBackToHome }) =>
   };
 
   const downloadTxt = () => {
-    if (!result) return;
+    if (!result || !file) return;
+    const textBlob = new Blob([extractedText || ''], { type: 'text/plain;charset=utf-8' });
+    const downloadUrl = URL.createObjectURL(textBlob);
     const a = document.createElement('a');
-    a.href = result.downloadUrl;
-    a.download = result.fileName;
+    a.href = downloadUrl;
+    a.download = `${file.name.replace(/\.pdf$/i, '')}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+    URL.revokeObjectURL(downloadUrl);
   };
+
+  const isTextEmpty = extractedText !== null && (!extractedText.trim() || extractedText.replace(/--- PAGE \d+ ---/g, '').trim().length < 5);
 
   if (extractedText !== null && result) {
     return (
@@ -100,6 +122,32 @@ export const PdfToTextView: React.FC<PdfToTextViewProps> = ({ onBackToHome }) =>
             </button>
           </div>
         </div>
+
+        {/* If little or no text found, show OCR prompt */}
+        {isTextEmpty && !useOcr && (
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <Sparkles className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="text-xs font-bold text-amber-900">
+                  Scanned Document or Image PDF Detected
+                </p>
+                <p className="text-xs text-amber-700 mt-0.5">
+                  This document seems to contain images instead of digital text. Run in-browser OCR to recognize text from scanned images!
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => handleExtract(true)}
+              disabled={isProcessing}
+              className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl shadow-sm flex items-center gap-2 shrink-0 transition-colors"
+            >
+              <ScanText className="w-4 h-4" />
+              <span>Run OCR Text Recognition</span>
+            </button>
+          </div>
+        )}
 
         {/* Text Preview Box */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
@@ -177,6 +225,40 @@ export const PdfToTextView: React.FC<PdfToTextViewProps> = ({ onBackToHome }) =>
             </button>
           </div>
 
+          {/* OCR Checkbox Toggle */}
+          <label className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-200/80 cursor-pointer hover:bg-slate-100/70 transition-colors">
+            <input
+              type="checkbox"
+              checked={useOcr}
+              onChange={(e) => setUseOcr(e.target.checked)}
+              className="w-4 h-4 rounded text-cyan-600 accent-cyan-600 focus:ring-cyan-500 cursor-pointer"
+            />
+            <div>
+              <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                Enable OCR Text Recognition
+              </span>
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                Check this if your PDF is a scanned document or has images instead of selectable text.
+              </p>
+            </div>
+          </label>
+
+          {isProcessing && (
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+              <div className="flex justify-between text-xs font-bold text-slate-700">
+                <span>{statusMessage || 'Extracting text...'}</span>
+                <span>{progress}%</span>
+              </div>
+              <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-cyan-600 transition-all duration-300 rounded-full"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+          )}
+
           {error && (
             <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs font-medium">
               {error}
@@ -186,7 +268,7 @@ export const PdfToTextView: React.FC<PdfToTextViewProps> = ({ onBackToHome }) =>
           <div className="flex justify-end pt-2">
             <button
               disabled={isProcessing}
-              onClick={handleExtract}
+              onClick={() => handleExtract()}
               className="px-8 py-3.5 bg-cyan-600 hover:bg-cyan-700 disabled:bg-slate-300 text-white font-bold rounded-2xl shadow-lg shadow-cyan-600/30 hover:shadow-xl transition-all flex items-center gap-2 text-sm"
             >
               {isProcessing ? (
@@ -197,7 +279,7 @@ export const PdfToTextView: React.FC<PdfToTextViewProps> = ({ onBackToHome }) =>
               ) : (
                 <>
                   <AlignLeft className="w-5 h-5" />
-                  <span>Extract Text</span>
+                  <span>{useOcr ? 'Extract with OCR' : 'Extract Text'}</span>
                 </>
               )}
             </button>
@@ -207,3 +289,4 @@ export const PdfToTextView: React.FC<PdfToTextViewProps> = ({ onBackToHome }) =>
     </div>
   );
 };
+
